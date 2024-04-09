@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <title>P.V.Taufalele</title>
+    </head>
+    <body>
+        <div id="logo_header_container">
+            <a href="{{ url_for('home') }}">PAULTAUFALELE.COM</a>
+            <hr>
+            <h1>PhD Student - Vanderbilt.</h1>
+        </div>
+        <div id="main_container" class="clearfix" style="display: block">
+            <div id="{{ nav_col_left }}" style="display: block">
+                {% block links %} {% endblock %}
+            </div>
+            <div id="{{ name }}" style="display: block">
+                {% block large_photo %} {% endblock %}
+            </div>
+        </div>
+
+        <p><button onclick="SendIt()" class="button-sendit">Send It?</button></p>
+        <p>
+            <img id='main_img' src="{{ url_for('static', filename='img/envelope.jpeg') }}" class="envelope" style="position: absolute" width="45px" height="45px">
+        </p>
+        
+        <script>
+            function SendIt(){
+                var cat = document.querySelector("img.envelope");
+                var button = document.querySelector("button.button-sendit");
+                var angle = 0, lastTime = null;
+                function animate(time){
+                    if(lastTime != null)
+                        if(angle < 800)
+                            angle += (time - lastTime) * 0.5;
+                        else{
+                            cat.parentNode.removeChild(cat);
+                            button.parentNode.removeChild(button);
+                            return
+                        }
+                        lastTime= time;
+                    cat.style.left = angle + "px";
+                    requestAnimationFrame(animate);
+                }
+                requestAnimationFrame(animate);
+            }
+        </script>
+    </div>
+    </body>
+</html>

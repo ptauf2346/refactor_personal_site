@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block header %} 
+<h1>Vitae</h1>
+{% endblock %}
+
+{% block content %} 
+<br>
+
+<object class="pdf" data="{{ url_for('static', filename='paultaufalele-resume.pdf') }}"
+width="800" height="1100">
+</object>
+
+
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block header %} 
+<h1>Analysis</h1>
+{% endblock %}
+
+{% block content %} 
+
+<p>Enter your gene here</p>
+<form action='/submit' method="post">
+    <label for="gene">Enter Gene:</label>
+    <input type="gene" name="gene" id="gene" required>
+    <input type="submit" value="submit">
+  </form>
+
+{% if not image_url %}
+<p>Chill</p>
+{% elif image_url == 'GENE DOES NOT EXIST' %}
+<p>GENE DOESNT EXIST, TRY AGAIN</p>
+{% else %}
+<style>
+  .grid-container {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Creates 3 columns */
+    grid-gap: 10px; /* Space between grid items */
+    padding-left: 20px;
+  }
+  .grid-label {
+    position: absolute; /* Positioned absolutely within the grid container */
+    transform: rotate(-90deg);    
+    transform-origin: bottom left;
+    white-space: nowrap;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-right:0;
+  }
+  .grid-item {
+    /* Style for the grid items if needed, e.g., sizing or alignment */
+  }
+  .grid-item img {
+    width: 100%; /* Makes images fully responsive within their containers */
+    height: auto;
+  }
+</style>
+<div class="grid-container">
+  <div class="grid-label" style="bottom: 65%;">Control Treated</div>
+  <div class="grid-item"><img src="{{ image_url[0] }}?{{ unique_id }}" alt="Image 1"></div>
+  <div class="grid-item"><img src="{{ image_url[1] }}?{{ unique_id }}" alt="Image 2"></div>
+  <div class="grid-item"><img src="{{ image_url[2] }}?{{ unique_id }}" alt="Image 3"></div>
+  <div class="grid-label" style="bottom: 14%;">BAPN Treated</div>
+  <div class="grid-item"><img src="{{ image_url[3] }}?{{ unique_id }}" alt="Image 1"></div>
+  <div class="grid-item"><img src="{{ image_url[4] }}?{{ unique_id }}" alt="Image 2"></div>
+  <div class="grid-item"><img src="{{ image_url[5] }}?{{ unique_id }}" alt="Image 3"></div>
+</div>
+{% endif %}
+
+{% endblock %}
+

@@ -1,0 +1,38 @@
+{% extends 'base_home.html' %}
+
+{% block links%}
+<a href="{{ url_for('fellowships.generaladvice') }}">General Advice</a>
+<br>
+<a href="{{ url_for('fellowships.summaryabstract') }}">Summary/Abstract</a>
+<br>
+<a href="{{ url_for('fellowships.bibliography') }}">Bibliography</a>
+<br>
+<a href="{{ url_for('fellowships.institutionalletters') }}">Institutional Letters</a>
+<br>
+<a href="{{ url_for('fellowships.researchproposal') }}">Research Proposal</a>
+<br>
+<a href="{{ url_for('fellowships.trainingplan') }}">Training Plan</a>
+<br>
+<a href="{{ url_for('fellowships.animalwork') }}">Animal Work</a>
+<br>
+<a href="{{ url_for('fellowships.rcr') }}">RCR</a>
+<br>
+<a href="{{ url_for('fellowships.specificaims') }}">Specific Aims</a>
+<br>
+<a href="{{ url_for('fellowships.recletters') }}">Rec Letters</a>
+<br>
+<a href="{{ url_for('fellowships.biosketch') }}">BioSketch</a>
+<br>
+<a href="{{ url_for('fellowships.reviewers') }}">Reviewers</a>
+<br>
+<a href="{{ url_for('fellowships.grants') }}">Grants</a>
+<br>
+{% endblock %}
+
+{% block large_photo %}
+<span>Start Early!!!!</span>
+<img id='main_img' src="{{ url_for('static', filename='img/cover-letter.png') }}">
+{% endblock %}
+       
+
+        

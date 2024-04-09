@@ -1,0 +1,24 @@
+{% extends 'base_home.html' %}
+
+
+{% block links%}
+<a href="{{ url_for('about') }}">About</a>
+<br>
+<a href="{{ url_for('vitae') }}">Vitae</a>
+<br>
+<a href="{{ url_for('writing') }}">Writing</a>
+<br>
+<a href="{{ url_for('projects') }}">Projects</a>
+<br>
+<a href="{{ url_for('stuff') }}">Stuff</a>
+<br>
+<a href="{{ url_for('contact') }}">Contact</a>
+{% endblock %}
+
+{% block large_photo %}
+<span><a href="https://www.flickr.com/photos/voyageuroutwardboundschool/with/31999559907/">Dog-sledding</a></span>
+<img id='main_img' src="{{ url_for('static', filename='img/paul-sled.jpg') }}">
+{% endblock %}
+       
+
+        
