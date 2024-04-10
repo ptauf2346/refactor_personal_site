@@ -1,6 +1,6 @@
 from flask import Flask, render_template, url_for, request, redirect, session
-import firebase_admin
-from firebase_admin import credentials, firestore
+#import firebase_admin
+#from firebase_admin import credentials, firestore
 import time
 
 app = Flask(__name__)
@@ -12,11 +12,10 @@ app.register_blueprint(fellowships)
 
 from analysis import generate_umap_feature_plot
 
-if not firebase_admin._apps:
-    cred = credentials.Certificate('resume-68c39-firebase-adminsdk-le5uz-01999bf06d.json')
-    firebase_admin.initialize_app(cred)
-db = firestore.client()
-
+#if not firebase_admin._apps:
+#    cred = credentials.Certificate('resume-68c39-firebase-adminsdk-le5uz-01999bf06d.json')
+#    firebase_admin.initialize_app(cred)
+#db = firestore.client()
 
 @app.route('/submit', methods=['POST'])
 def submit():
@@ -30,9 +29,6 @@ def form():
     return render_template('/analysis/index.html', image_url=data, unique_id=unique_id)
 
 
-
-
-
 @app.route("/")
 def home():
     name = 'ya_boi'
@@ -40,12 +36,11 @@ def home():
     return render_template('index.html', name=name, nav_col_left=nav_col_left)
 
 @app.route("/about")
-def about(db=db):
-    users_ref = db.collection("Education")
-    docs = users_ref.stream()
-    return render_template('pages/about.html', docs=docs)
+def about():
+    #users_ref = db.collection("Education")
+    #docs = users_ref.stream()
+    return render_template('pages/about.html')
 
-from app import app
 
 @app.route("/vitae")
 def vitae():

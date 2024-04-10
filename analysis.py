@@ -17,7 +17,7 @@ def generate_umap_feature_plot(gene):
         plt.figure(figsize=(8, 6), dpi=300)
         x = umap['UMAP_1'] 
         y = umap['UMAP_2']
-        scatter = plt.scatter(x, y, c=adata[:, gene].X, cmap='hot', s=6)
+        scatter = plt.scatter(x, y, c=adata[:, gene].X, cmap='hot', vmax=np.median(adata[:,gene].X)*2, s=6)
         plt.colorbar(scatter, label='Gene Expression Level')
         plt.xlabel('UMAP 1')
         plt.ylabel('UMAP 2')
@@ -64,15 +64,24 @@ def generate_umap_feature_plot(gene):
 
 
     # check to see if gene is in the SCT library
-    if gene in sct_genes:
-        umap[gene] = sct_norm_adata[:, gene].X.flatten()
-        make_umap_feature_plot(umap, sct_norm_adata, gene)
-    elif gene in genes:
+    #if gene in sct_genes:
+    #    umap[gene] = sct_norm_adata[:, gene].X.flatten()
+    #    make_umap_feature_plot(umap, sct_norm_adata, gene)
+    #elif gene in genes:
+    #    umap[gene] = norm_adata[:, gene].X.flatten()
+    #    make_umap_feature_plot(umap, norm_adata, gene)
+    #else:
+    #    return 'GENE DOES NOT EXIST'
+       # check to see if gene is in the SCT library
+
+    if gene in genes:
         umap[gene] = norm_adata[:, gene].X.flatten()
         make_umap_feature_plot(umap, norm_adata, gene)
     else:
         return 'GENE DOES NOT EXIST'
-        # Ensure the directory for the image exists
+    
+
+    # Ensure the directory for the image exists
     image_dir = 'static/images'
     if not os.path.exists(image_dir):
         os.makedirs(image_dir)
