@@ -5,8 +5,8 @@ def generate_umap_feature_plot(gene):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-    import matplotlib.image as mpimg
-    from IPython.display import Image
+    #import matplotlib.image as mpimg
+    #from IPython.display import Image
     import anndata
     import os
     import seaborn as sns
