@@ -13,19 +13,16 @@ def generate_umap_feature_plot(gene):
     import h5py 
     import numpy as np
 
-    def make_umap_feature_plot(umap, adata, gene):
+    def make_umap_feature_plot(umap, gene):
         plt.figure(figsize=(8, 6), dpi=300)
         x = umap['UMAP_1'] 
         y = umap['UMAP_2']
-        scatter = plt.scatter(x, y, c=adata[:, gene].X, cmap='hot', vmax=np.median(adata[:,gene].X)*2, s=6)
+        scatter = plt.scatter(x, y, c=umap[gene], cmap='hot', s=6)
         plt.colorbar(scatter, label='Gene Expression Level')
         plt.xlabel('UMAP 1')
         plt.ylabel('UMAP 2')
         plt.title(gene)
 
-    #adata = anndata.read_h5ad('data/stiff.integrated/stiff_integrated.h5ad')
-    #norm_adata = anndata.read_h5ad('data/stiff.integrated/stiff_integrated_norm.h5ad')
-    #sct_norm_adata = anndata.read_h5ad('data/stiff.integrated/stiff_integrated_sct.h5ad')
     dataset_path = 'sparse_matrix'
     # load in umap embeddings
     umap = pd.read_csv('data/stiff.integrated/umap_embeddings.csv')
@@ -47,40 +44,12 @@ def generate_umap_feature_plot(gene):
 
     norm_adata = anndata.AnnData(X=data, obs=pd.DataFrame(index=cell_labels), var=pd.DataFrame(index=gene_labels))
 
-    # load in SCT normalized counts and SCT genes
-    h5_file = 'data/stiff.integrated/sct_normalized_counts_data.h5'
-    with h5py.File(h5_file, 'r') as f:
-        data = np.array(f[dataset_path])
-        #print(data.shape)
-        
-    cell_labels = umap['cells']
-    sct_genes = []
-    with open('data/stiff.integrated/sct_gene_names.txt', 'r') as file:
-        for line in file:
-            sct_genes.append(line.strip())
-
-    sct_norm_adata = anndata.AnnData(X=data, obs=pd.DataFrame(index=cell_labels), var=pd.DataFrame(index=sct_genes))
-
-
-
-    # check to see if gene is in the SCT library
-    #if gene in sct_genes:
-    #    umap[gene] = sct_norm_adata[:, gene].X.flatten()
-    #    make_umap_feature_plot(umap, sct_norm_adata, gene)
-    #elif gene in genes:
-    #    umap[gene] = norm_adata[:, gene].X.flatten()
-    #    make_umap_feature_plot(umap, norm_adata, gene)
-    #else:
-    #    return 'GENE DOES NOT EXIST'
-       # check to see if gene is in the SCT library
-
     if gene in genes:
         umap[gene] = norm_adata[:, gene].X.flatten()
-        make_umap_feature_plot(umap, norm_adata, gene)
+        umap[gene] = np.log1p(umap[gene])
+        make_umap_feature_plot(umap, gene)
     else:
         return 'GENE DOES NOT EXIST'
-    
-
     # Ensure the directory for the image exists
     image_dir = 'static/images'
     if not os.path.exists(image_dir):
@@ -114,9 +83,6 @@ def generate_umap_feature_plot(gene):
 
 
     #NOW DO IT FOR SOFT
-    #adata = anndata.read_h5ad('data/soft.integrated/soft_integrated.h5ad')
-    #norm_adata = anndata.read_h5ad('data/soft.integrated/soft_integrated_norm.h5ad')
-    #sct_norm_adata = anndata.read_h5ad('data/soft.integrated/soft_integrated_sct.h5ad')
 
     # load in umap embeddings
     umap = pd.read_csv('data/soft.integrated/umap_embeddings.csv')
@@ -138,29 +104,10 @@ def generate_umap_feature_plot(gene):
 
     norm_adata = anndata.AnnData(X=data, obs=pd.DataFrame(index=cell_labels), var=pd.DataFrame(index=gene_labels))
 
-    # load in SCT normalized counts and SCT genes
-    h5_file = 'data/soft.integrated/sct_normalized_counts_data.h5'
-    with h5py.File(h5_file, 'r') as f:
-        data = np.array(f[dataset_path])
-        #print(data.shape)
-        
-    cell_labels = umap['cells']
-    sct_genes = []
-    with open('data/soft.integrated/sct_gene_names.txt', 'r') as file:
-        for line in file:
-            sct_genes.append(line.strip())
-
-    sct_norm_adata = anndata.AnnData(X=data, obs=pd.DataFrame(index=cell_labels), var=pd.DataFrame(index=sct_genes))
-
-
-
-    # check to see if gene is in the SCT library
-    if gene in sct_genes:
-        umap[gene] = sct_norm_adata[:, gene].X.flatten()
-        make_umap_feature_plot(umap, sct_norm_adata, gene)
-    elif gene in genes:
+    if gene in genes:
         umap[gene] = norm_adata[:, gene].X.flatten()
-        make_umap_feature_plot(umap, norm_adata, gene)
+        umap[gene] = np.log1p(umap[gene])
+        make_umap_feature_plot(umap, gene)
     else:
         return 'GENE DOES NOT EXIST'
         # Ensure the directory for the image exists
