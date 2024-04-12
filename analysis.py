@@ -22,10 +22,11 @@ def generate_umap_feature_plot(gene):
 
     def access_db(table, gene):
     #access database
+        password = os.environ.get('SECRET_AWS_PASSWORD')
         conn_params = {
         "dbname": 'postgres',
         "user": 'postgres',
-        "password": 'FcuSshAgM3HezCARpCR9',
+        "password": password,
         "host": 'scrnaseq-database-acta.ch2yim6a0f08.us-east-2.rds.amazonaws.com',
         "port": '5432'  # Default PostgreSQL port, change if necessary
         }
@@ -89,6 +90,7 @@ def generate_umap_feature_plot(gene):
     custom_palette = {'Tumor': 'pink', 'Immune': 'white', 'Fibroblast': 'brown', 'Endothelial':'yellow'}
     violinplot(x='Idents', hue='Idents', y='value', data=umap, palette=custom_palette, bw_method=0.5, inner='quartile', legend=False)
     plt.title(gene)
+    plt.ylabel('nlog(1+counts)')
     violin_path = os.path.join(image_dir, 'stiff-violin-plot.png')
     plt.savefig(violin_path)    
     plt.close()
@@ -98,6 +100,7 @@ def generate_umap_feature_plot(gene):
     barplot(x='Idents', hue='Idents', y='value', data=umap, palette=custom_palette, edgecolor='black', capsize=0.2, 
                     err_kws={'linewidth': 1, 'color': 'black'}, legend=False)
     plt.title(gene)
+    plt.ylabel('nlog(1+counts)')
     bar_path = os.path.join(image_dir, 'stiff-bar-plot.png')
     plt.savefig(bar_path)    
     plt.close()
@@ -141,6 +144,7 @@ def generate_umap_feature_plot(gene):
     custom_palette = {'Tumor': 'pink', 'Immune': 'white', 'Fibroblast': 'brown', 'Endothelial':'yellow'}
     violinplot(x='Idents', hue='Idents', y='value', data=umap, palette=custom_palette, bw_method=0.5, inner='quartile', legend=False)
     plt.title(gene)
+    plt.ylabel('nlog(1+counts)')
     violin_path1 = os.path.join(image_dir, 'soft-violin-plot.png')
     plt.savefig(violin_path1)    
     plt.close()
@@ -150,6 +154,7 @@ def generate_umap_feature_plot(gene):
     barplot(x='Idents', hue='Idents', y='value', data=umap, palette=custom_palette, edgecolor='black', capsize=0.2, 
                     err_kws={'linewidth': 1, 'color': 'black'}, legend=False)
     plt.title(gene)
+    plt.ylabel('nlog(1+counts)')
     bar_path1 = os.path.join(image_dir, 'soft-bar-plot.png')
     plt.savefig(bar_path1)    
     plt.close()
