@@ -1,21 +1,14 @@
 from flask import Flask, render_template, url_for, request, redirect, session
-#import firebase_admin
-#from firebase_admin import credentials, firestore
 import time
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Set a secret key for session management
+app.secret_key = 'your_secret_key'
 
 
 from fellowships import fellowships
 app.register_blueprint(fellowships)
 
 from analysis import generate_umap_feature_plot
-
-#if not firebase_admin._apps:
-#    cred = credentials.Certificate('resume-68c39-firebase-adminsdk-le5uz-01999bf06d.json')
-#    firebase_admin.initialize_app(cred)
-#db = firestore.client()
 
 @app.route('/submit', methods=['POST'])
 def submit():
@@ -37,8 +30,6 @@ def home():
 
 @app.route("/about")
 def about():
-    #users_ref = db.collection("Education")
-    #docs = users_ref.stream()
     return render_template('pages/about.html')
 
 
