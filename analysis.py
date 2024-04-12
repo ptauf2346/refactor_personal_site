@@ -10,15 +10,23 @@ def generate_umap_feature_plot(gene):
     from numpy import log1p
     import psycopg2
 
-    def make_umap_feature_plot(umap, gene):
-        plt.figure(figsize=(8, 6), dpi=300)
-        x = umap['UMAP_1'] 
-        y = umap['UMAP_2']
-        scatter = plt.scatter(x, y, c=umap['value'], cmap='hot', s=6)
-        plt.colorbar(scatter, label='Gene Expression Level')
-        plt.xlabel('UMAP 1')
-        plt.ylabel('UMAP 2')
-        plt.title(gene)
+    def load_umap(condition):
+        if condition == 'stiff':
+            umap = pd.read_csv('data/stiff.integrated/umap_embeddings.csv')
+        else:
+            umap = pd.read_csv('data/soft.integrated/umap_embeddings.csv')
+        table = ''.join([condition, '_integrated_norm_counts'])
+        rows = access_db(table, gene)
+        umap['gene'] = gene
+        umap['value'] = 0
+        df = pd.DataFrame(rows, columns=['cells', 'gene', 'value'])
+        del rows
+        merged_df = umap.merge(df, on='cells', how='left', suffixes=('', '_updated'))
+        umap['value'] = merged_df['value_updated'].fillna(merged_df['value'])
+        del merged_df
+        umap['value'] = [float(x) for x in umap['value']]
+        umap['value'] = log1p(umap['value'])
+        return umap
 
     def access_db(table, gene):
     #access database
@@ -51,10 +59,28 @@ def generate_umap_feature_plot(gene):
                 conn.close()
         return rows
     
-
-    # load in umap embeddings
-    umap = pd.read_csv('data/stiff.integrated/umap_embeddings.csv')
-
+    def make_umap_feature_plot(condition, gene):
+        umap = load_umap(condition)
+        plt.figure(figsize=(8, 6), dpi=300)
+        x = umap['UMAP_1'] 
+        y = umap['UMAP_2']
+        scatter = plt.scatter(x, y, c=umap['value'], cmap='hot', s=6)
+        plt.colorbar(scatter, label='Gene Expression Level')
+        plt.xlabel('UMAP 1')
+        plt.ylabel('UMAP 2')
+        plt.title(gene)
+        # Ensure the directory for the image exists
+        image_dir = 'static/images'
+        if not os.path.exists(image_dir):
+            os.makedirs(image_dir)
+        if condition == 'stiff':
+            umap_path = os.path.join(image_dir, 'stiff-plot.png')
+        else:
+            umap_path = os.path.join(image_dir, 'soft-plot.png')
+        plt.savefig(umap_path)    
+        plt.close()
+        return umap, umap_path
+    
     # load in all gene names
     genes = []
     with open('data/stiff.integrated/gene_names.txt', 'r') as file:
@@ -62,28 +88,11 @@ def generate_umap_feature_plot(gene):
             genes.append(line.strip())
 
     if gene in genes:
-        rows = access_db('stiff_integrated_norm_counts', gene)
-        umap['gene'] = gene
-        umap['value'] = 0
-        df = pd.DataFrame(rows, columns=['cells', 'gene', 'value'])
-        del rows
-        merged_df = umap.merge(df, on='cells', how='left', suffixes=('', '_updated'))
-        umap['value'] = merged_df['value_updated'].fillna(merged_df['value'])
-        del merged_df
-        umap['value'] = [float(x) for x in umap['value']]
-        umap['value'] = log1p(umap['value'])
-        make_umap_feature_plot(umap, gene)
+        umap, umap_path = make_umap_feature_plot('stiff', gene)
     else:
         return 'GENE DOES NOT EXIST'
-    # Ensure the directory for the image exists
+    
     image_dir = 'static/images'
-    if not os.path.exists(image_dir):
-        os.makedirs(image_dir)
-
-    umap_path = os.path.join(image_dir, 'stiff-plot.png')
-    plt.savefig(umap_path)    
-    plt.close()
-
 
     # Create a violin plot
     plt.figure(figsize=(5,4),dpi=300)  # Adjust the dpi for on-screen display quality
@@ -106,9 +115,6 @@ def generate_umap_feature_plot(gene):
     plt.close()
 
     #SOFT STUFF
-    # load in umap embeddings
-    umap = pd.read_csv('data/soft.integrated/umap_embeddings.csv')
-
     # load in all gene names
     genes = []
     with open('data/soft.integrated/gene_names.txt', 'r') as file:
@@ -116,28 +122,9 @@ def generate_umap_feature_plot(gene):
             genes.append(line.strip())
 
     if gene in genes:
-        rows = access_db('soft_integrated_norm_counts', gene)
-        umap['gene'] = gene
-        umap['value'] = 0
-        df = pd.DataFrame(rows, columns=['cells', 'gene', 'value'])
-        del rows
-        merged_df = umap.merge(df, on='cells', how='left', suffixes=('', '_updated'))
-        umap['value'] = merged_df['value_updated'].fillna(merged_df['value'])
-        del merged_df
-        umap['value'] = [float(x) for x in umap['value']]
-        umap['value'] = log1p(umap['value'])
-        make_umap_feature_plot(umap, gene)
+        umap, umap_path1 = make_umap_feature_plot('soft', gene)
     else:
         return 'GENE DOES NOT EXIST'
-    # Ensure the directory for the image exists
-    image_dir = 'static/images'
-    if not os.path.exists(image_dir):
-        os.makedirs(image_dir)
-
-    umap_path1 = os.path.join(image_dir, 'soft-plot.png')
-    plt.savefig(umap_path1)    
-    plt.close()
-
 
     # Create a violin plot
     plt.figure(figsize=(5,4),dpi=300)  # Adjust the dpi for on-screen display quality
@@ -146,7 +133,7 @@ def generate_umap_feature_plot(gene):
     plt.title(gene)
     plt.ylabel('nlog(1+counts)')
     violin_path1 = os.path.join(image_dir, 'soft-violin-plot.png')
-    plt.savefig(violin_path1)    
+    plt.savefig(violin_path1)
     plt.close()
 
     # Create a bar plot
