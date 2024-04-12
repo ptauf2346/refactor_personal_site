@@ -6,8 +6,8 @@ def generate_umap_feature_plot(gene):
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     import os
-    import seaborn as sns
-    import numpy as np
+    from seaborn import violinplot, barplot
+    from numpy import log1p
     import psycopg2
 
     def make_umap_feature_plot(umap, gene):
@@ -70,7 +70,7 @@ def generate_umap_feature_plot(gene):
         umap['value'] = merged_df['value_updated'].fillna(merged_df['value'])
         del merged_df
         umap['value'] = [float(x) for x in umap['value']]
-        umap['value'] = np.log1p(umap['value'])
+        umap['value'] = log1p(umap['value'])
         make_umap_feature_plot(umap, gene)
     else:
         return 'GENE DOES NOT EXIST'
@@ -87,7 +87,7 @@ def generate_umap_feature_plot(gene):
     # Create a violin plot
     plt.figure(figsize=(5,4),dpi=300)  # Adjust the dpi for on-screen display quality
     custom_palette = {'Tumor': 'pink', 'Immune': 'white', 'Fibroblast': 'brown', 'Endothelial':'yellow'}
-    sns.violinplot(x='Idents', hue='Idents', y='value', data=umap, palette=custom_palette, bw_method=0.5, inner='quartile', legend=False)
+    violinplot(x='Idents', hue='Idents', y='value', data=umap, palette=custom_palette, bw_method=0.5, inner='quartile', legend=False)
     plt.title(gene)
     violin_path = os.path.join(image_dir, 'stiff-violin-plot.png')
     plt.savefig(violin_path)    
@@ -95,7 +95,7 @@ def generate_umap_feature_plot(gene):
 
     # Create a bar plot
     plt.figure(figsize=(5,4), dpi=300)  # Adjust the dpi for on-screen display quality
-    sns.barplot(x='Idents', hue='Idents', y='value', data=umap, palette=custom_palette, edgecolor='black', capsize=0.2, 
+    barplot(x='Idents', hue='Idents', y='value', data=umap, palette=custom_palette, edgecolor='black', capsize=0.2, 
                     err_kws={'linewidth': 1, 'color': 'black'}, legend=False)
     plt.title(gene)
     bar_path = os.path.join(image_dir, 'stiff-bar-plot.png')
