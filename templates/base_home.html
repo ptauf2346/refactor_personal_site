@@ -26,20 +26,20 @@
         
         <script>
             function SendIt(){
-                var cat = document.querySelector("img.envelope");
-                var button = document.querySelector("button.button-sendit");
-                var angle = 0, lastTime = null;
+                var envelopeImage = document.querySelector("img.envelope");
+                var sendButton = document.querySelector("button.button-sendit");
+                var positionTracker = 0, lastTime = null;
                 function animate(time){
                     if(lastTime != null)
-                        if(angle < 800)
-                            angle += (time - lastTime) * 0.5;
+                        if(positionTracker < 800)
+                            positionTracker += (time - lastTime) * 0.5;
                         else{
-                            cat.parentNode.removeChild(cat);
-                            button.parentNode.removeChild(button);
+                            envelopeImage.parentNode.removeChild(envelopeImage);
+                            sendButton.parentNode.removeChild(sendButton);
                             return
                         }
-                        lastTime= time;
-                    cat.style.left = angle + "px";
+                    lastTime= time;
+                    envelopeImage.style.left = positionTracker + "px";
                     requestAnimationFrame(animate);
                 }
                 requestAnimationFrame(animate);
